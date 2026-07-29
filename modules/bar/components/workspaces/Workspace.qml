@@ -31,7 +31,8 @@ ColumnLayout {
 
     StyledText {
         id: indicator
-
+	
+	visible: !root.hasWindows
         Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
         Layout.preferredHeight: Tokens.sizes.bar.innerWidth - Tokens.padding.small
 
@@ -62,13 +63,14 @@ ColumnLayout {
 
         Layout.alignment: Qt.AlignHCenter
         Layout.fillHeight: true
-        Layout.topMargin: -Tokens.sizes.bar.innerWidth / 10
+	Layout.topMargin: root.hasWindows ? Tokens.padding.small + Tokens.padding.extraSmall : -Tokens.sizes.bar.innerWidth / 10
+	Layout.bottomMargin: root.hasWindows ? Tokens.padding.small : 0
 
         visible: active
         active: root.hasWindows
 
         sourceComponent: Column {
-            spacing: 0
+            spacing: Tokens.padding.small
 
             add: Transition {
                 Anim {
@@ -102,10 +104,12 @@ ColumnLayout {
 
                 MaterialIcon {
                     required property var modelData
-
+		    width: Tokens.sizes.bar.innerWidth
+		    horizontalAlignment: Text.AlignHCenter
                     grade: 0
                     text: Icons.getAppCategoryIcon(modelData.lastIpcObject.class, "terminal")
-                    color: Colours.palette.m3onSurfaceVariant
+		    color: Colours.palette.m3onSurfaceVariant
+
                 }
             }
         }
