@@ -10,11 +10,14 @@ import "modules/background"
 import "modules/areapicker"
 import "modules/wallpaperfolders"
 import "modules/lock"
+import "modules/keybinds"
 import QtQuick
 import Quickshell
 import qs.services
 
 ShellRoot {
+
+	KeybindCheatsheet{}
     id: root
 
     settings.watchFiles: true
@@ -43,3 +46,7 @@ ShellRoot {
         lock: lock
     }
 }
+
+
+
+
