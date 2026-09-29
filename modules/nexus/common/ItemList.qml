@@ -71,6 +71,35 @@ ConnectedRect {
 
         spacing: 0
         interactive: false
+
+        MouseArea {
+            anchors.fill: parent
+            acceptedButtons: Qt.NoButton
+            z: 1000
+
+            onWheel: event => {
+                let flick = root.parent
+                while (flick && (flick.contentY === undefined || flick.contentHeight === undefined))
+                    flick = flick.parent
+
+                if (!flick)
+                    return
+
+                let delta = event.angleDelta.y
+                if (delta === 0)
+                    delta = event.pixelDelta.y
+
+                const minY = -flick.topMargin
+                const maxY = Math.max(minY, flick.contentHeight - flick.height + flick.bottomMargin)
+
+                flick.contentY = Math.max(
+                    minY,
+                    Math.min(maxY, flick.contentY - delta * 2.0)
+                )
+
+                event.accepted = true
+            }
+        }
         opacity: root.showList ? 1 : 0
 
         add: Transition {
