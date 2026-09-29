@@ -229,10 +229,32 @@ Singleton {
         if (url === "")
             return;
 
-        Requests.get(url, text => {
-            const json = JSON.parse(text);
-            if (!json.current || !json.daily)
+        // Use XMLHttpRequest here instead of the shared Requests helper.
+        // Weather is a critical external-data path and should not silently
+        // fail when the helper encounters a Qt/network-layer issue.
+        const request = new XMLHttpRequest();
+        request.open("GET", url);
+        request.onreadystatechange = function() {
+            if (request.readyState !== XMLHttpRequest.DONE)
                 return;
+
+            if (request.status < 200 || request.status >= 300) {
+                console.warn(lc, `Weather request failed with HTTP status ${request.status}: ${request.statusText}`);
+                return;
+            }
+
+            let json;
+            try {
+                json = JSON.parse(request.responseText);
+            } catch (error) {
+                console.warn(lc, `Unable to parse weather response: ${error}`);
+                return;
+            }
+
+            if (!json.current || !json.daily || !json.hourly) {
+                console.warn(lc, "Weather response is missing current, daily, or hourly data");
+                return;
+            }
 
             cc = {
                 weatherCode: json.current.weather_code,
@@ -275,7 +297,15 @@ Singleton {
                 });
             }
             hourlyForecast = hourlyList;
-        });
+        };
+        request.onerror = function() {
+            console.warn(lc, "Weather request failed at the network layer");
+        };
+        request.ontimeout = function() {
+            console.warn(lc, "Weather request timed out");
+        };
+        request.timeout = 15000;
+        request.send();
     }
 
     function toFahrenheit(celcius: real): real {
