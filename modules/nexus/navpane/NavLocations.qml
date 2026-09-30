@@ -17,6 +17,32 @@ VerticalFadeFlickable {
     bottomMargin: Tokens.padding.large
     contentHeight: content.implicitHeight
 
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.NoButton
+        z: 1000
+        hoverEnabled: true
+
+        onWheel: event => {
+            let delta = event.angleDelta.y
+            if (delta === 0)
+                delta = event.pixelDelta.y
+
+            const minY = -root.topMargin
+            const maxY = Math.max(
+                minY,
+                root.contentHeight - root.height + root.bottomMargin
+            )
+
+            root.contentY = Math.max(
+                minY,
+                Math.min(maxY, root.contentY - delta * 2.0)
+            )
+
+            event.accepted = true
+        }
+    }
+
     TapHandler {
         onTapped: root.focus = true
     }

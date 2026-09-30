@@ -60,6 +60,28 @@ StyledListView {
     }
 
     spacing: Tokens.spacing.small
+
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.NoButton
+        z: 1000
+        hoverEnabled: true
+
+        onWheel: event => {
+            let delta = event.angleDelta.y
+            if (delta === 0)
+                delta = event.pixelDelta.y
+
+            const maxY = Math.max(0, root.contentHeight - root.height)
+
+            root.contentY = Math.max(
+                0,
+                Math.min(maxY, root.contentY - delta * 2.0)
+            )
+
+            event.accepted = true
+        }
+    }
     orientation: Qt.Vertical
     implicitHeight: (Tokens.sizes.launcher.itemHeight + spacing) * Math.min(Config.launcher.maxShown, count) - spacing
 
