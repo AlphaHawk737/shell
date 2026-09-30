@@ -1,0 +1,8 @@
+[SddmGreeterTheme]
+Name=Caelestia
+Description=Caelestia SDDM Test Theme
+Author=Aarnav
+Type=sddm-theme
+Version=1.0
+MainScript=Main.qml
+ConfigFile=theme.conf
