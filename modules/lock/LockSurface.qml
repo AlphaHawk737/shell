@@ -18,7 +18,7 @@ WlSessionLockSurface {
     contentItem.Config.screen: screen.name
     contentItem.Tokens.screen: screen.name
 
-    color: "transparent"
+    color: Colours.palette.m3background
 
     Connections {
         function onUnlock(): void {
@@ -167,7 +167,7 @@ WlSessionLockSurface {
             blurEnabled: true
             blur: 1
             blurMax: 64
-            blurMultiplier: 1
+            blurMultiplier: 2
         }
     }
 
